@@ -11,10 +11,7 @@ export default function ListaDeCasas({ setTelaAtual }) {
   const linkImagemCasa = 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=250&auto=format&fit=crop';
 
   return (
-    <LinearGradient
-      colors={['#F86F03', '#4F7FFF']}
-      style={styles.container}
-    >
+    <LinearGradient colors={['#F86F03', '#4F7FFF']} style={styles.container}>
       <StatusBar style="auto" />
 
       {/* PATINHAS DE FUNDO (Marca d'água) */}
@@ -34,17 +31,29 @@ export default function ListaDeCasas({ setTelaAtual }) {
           {/* COLUNA ESQUERDA (Lista de Casas Inteligente) */}
           <View style={styles.colunaEsquerda}>
 
-            <TouchableOpacity style={styles.itemCasa}>
+            {/* CLIQUE NA MINHA CASA */}
+            <TouchableOpacity 
+              style={styles.itemCasa}
+              onPress={() => setTelaAtual('ListaDePets')} 
+            >
               <Image source={{ uri: linkImagemCasa }} style={styles.imagemCasa} />
               <Text style={styles.textoCasa}>Minha casa</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.itemCasa}>
+            {/* CLIQUE NA CASA DOS AVÓS */}
+            <TouchableOpacity 
+              style={styles.itemCasa}
+              onPress={() => setTelaAtual('ListaDePets')} 
+            >
               <Image source={{ uri: linkImagemCasa }} style={styles.imagemCasa} />
               <Text style={styles.textoCasa}>Casa dos avós</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.itemCasa}>
+            {/* CLIQUE NA CASA DOS TIOS */}
+            <TouchableOpacity 
+              style={styles.itemCasa}
+              onPress={() => setTelaAtual('ListaDePets')} 
+            >
               <Image source={{ uri: linkImagemCasa }} style={styles.imagemCasa} />
               <Text style={styles.textoCasa}>Casa dos tios</Text>
             </TouchableOpacity>
@@ -56,14 +65,20 @@ export default function ListaDeCasas({ setTelaAtual }) {
             
             <View style={styles.itemAcao}>
               <Text style={styles.textoAcao}>Nova casa</Text>
-              <TouchableOpacity style={styles.botaoCirculo}>
+              <TouchableOpacity 
+                style={styles.botaoCirculo}
+                onPress={() => setTelaAtual('NovaCasa')}
+              >
                 <Ionicons name="add" size={50} color="#333" />
               </TouchableOpacity>
             </View>
 
             <View style={styles.itemAcao}>
-              <Text style={styles.textoAcao}>Entrar</Text>
-              <TouchableOpacity style={styles.botaoCirculo}>
+              <Text style={styles.textoAcao}>Excluir</Text>
+              <TouchableOpacity 
+                style={styles.botaoCirculo}
+                onPress={() => setTelaAtual('ExcluirCasa')}
+              >
                 <Feather name="trash-2" size={40} color="#333" />
               </TouchableOpacity>
             </View>
@@ -78,79 +93,17 @@ export default function ListaDeCasas({ setTelaAtual }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  conteudo: {
-    flex: 1,
-    paddingTop: 80,
-    paddingHorizontal: 20,
-  },
-  versao: {
-    position: 'absolute',
-    bottom: 20,
-    left: 20,
-    color: '#333',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  patinha: {
-    position: 'absolute',
-    zIndex: 0, 
-  },
-  colunasContainer: {
-    flexDirection: 'row', 
-    flex: 1,
-    zIndex: 1, 
-  },
-  // --- A MÁGICA DA COLUNA ESQUERDA ACONTECE AQUI ---
-  colunaEsquerda: {
-    flex: 1,
-    alignItems: 'center', 
-    justifyContent: 'center', // <-- Centraliza o grupo todo no meio da tela verticalmente
-    gap: 25, // <-- Cria o espaçamento automático entre as casas
-  },
-  itemCasa: {
-    alignItems: 'center',
-    // Apaguei o marginBottom daqui, agora o gap faz esse trabalho!
-  },
-  imagemCasa: {
-    width: 100,
-    height: 100,
-    borderRadius: 100, 
-    borderWidth: 2,
-    borderColor: '#333', 
-  },
-  textoCasa: {
-    color: '#333',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 10,
-  },
-  // --- COLUNA DIREITA ---
-  colunaDireita: {
-    flex: 1,
-    alignItems: 'center',
-    paddingTop: 160, 
-  },
-  itemAcao: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  textoAcao: {
-    color: '#333',
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  botaoCirculo: {
-    width: 100,
-    height: 100,
-    borderRadius: 100, 
-    borderWidth: 5,
-    borderColor: '#333', 
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F86F03'
-  }
+  container: { flex: 1, },
+  conteudo: { flex: 1, paddingTop: 80, paddingHorizontal: 20, },
+  versao: { position: 'absolute', bottom: 20, left: 20, color: '#333', fontSize: 14, fontWeight: 'bold', },
+  patinha: { position: 'absolute', zIndex: 0, },
+  colunasContainer: { flexDirection: 'row', flex: 1, zIndex: 1, },
+  colunaEsquerda: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 25, },
+  itemCasa: { alignItems: 'center', },
+  imagemCasa: { width: 100, height: 100, borderRadius: 100, borderWidth: 2, borderColor: '#333', },
+  textoCasa: { color: '#333', fontSize: 16, fontWeight: 'bold', marginTop: 10, },
+  colunaDireita: { flex: 1, alignItems: 'center', paddingTop: 160, },
+  itemAcao: { alignItems: 'center', marginBottom: 40, },
+  textoAcao: { color: '#333', fontSize: 22, fontWeight: 'bold', marginBottom: 10, },
+  botaoCirculo: { width: 100, height: 100, borderRadius: 100, borderWidth: 5, borderColor: '#333', justifyContent: 'center', alignItems: 'center', backgroundColor: '#F86F03', }
 });
