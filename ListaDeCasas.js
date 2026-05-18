@@ -1,90 +1,60 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
-
-// Importando os ícones mágicos do Expo!
 import { FontAwesome5, Ionicons, Feather } from '@expo/vector-icons';
 
-export default function ListaDeCasas({ setTelaAtual }) {
-  // Endereço de uma imagem de casa genérica para testarmos o formato redondo
-  const linkImagemCasa = 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=250&auto=format&fit=crop';
-
+// 👉 Recebe a memória "casas" e agora o "setCasaAtual"
+export default function ListaDeCasas({ setTelaAtual, casas, setCasaAtual }) {
   return (
     <LinearGradient colors={['#F86F03', '#4F7FFF']} style={styles.container}>
       <StatusBar style="auto" />
 
-      {/* PATINHAS DE FUNDO (Marca d'água) */}
       <FontAwesome5 name="paw" size={80} color="rgba(248, 111, 3, 0.4)" style={[styles.patinha, { bottom: 50, right: 30, transform: [{ rotate: '-20deg' }] }]} />
       <FontAwesome5 name="paw" size={60} color="rgba(248, 111, 3, 0.3)" style={[styles.patinha, { bottom: 150, right: 100, transform: [{ rotate: '-10deg' }] }]} />
-      <FontAwesome5 name="paw" size={70} color="rgba(248, 111, 3, 0.4)" style={[styles.patinha, { bottom: 250, right: 20, transform: [{ rotate: '-30deg' }] }]} />
-      <FontAwesome5 name="paw" size={50} color="rgba(248, 111, 3, 0.3)" style={[styles.patinha, { bottom: 330, right: 120, transform: [{ rotate: '-15deg' }] }]} />
-
+      
       <Text style={styles.versao}>v0.01</Text>
 
-      {/* ÁREA PRINCIPAL */}
-      <View style={styles.conteudo}>
+      <View style={styles.layoutPrincipal}>
         
-        {/* DUAS COLUNAS */}
-        <View style={styles.colunasContainer}>
-          
-          {/* COLUNA ESQUERDA (Lista de Casas Inteligente) */}
-          <View style={styles.colunaEsquerda}>
-
-            {/* CLIQUE NA MINHA CASA */}
-            <TouchableOpacity 
-              style={styles.itemCasa}
-              onPress={() => setTelaAtual('ListaDePets')} 
-            >
-              <Image source={{ uri: linkImagemCasa }} style={styles.imagemCasa} />
-              <Text style={styles.textoCasa}>Minha casa</Text>
-            </TouchableOpacity>
-
-            {/* CLIQUE NA CASA DOS AVÓS */}
-            <TouchableOpacity 
-              style={styles.itemCasa}
-              onPress={() => setTelaAtual('ListaDePets')} 
-            >
-              <Image source={{ uri: linkImagemCasa }} style={styles.imagemCasa} />
-              <Text style={styles.textoCasa}>Casa dos avós</Text>
-            </TouchableOpacity>
-
-            {/* CLIQUE NA CASA DOS TIOS */}
-            <TouchableOpacity 
-              style={styles.itemCasa}
-              onPress={() => setTelaAtual('ListaDePets')} 
-            >
-              <Image source={{ uri: linkImagemCasa }} style={styles.imagemCasa} />
-              <Text style={styles.textoCasa}>Casa dos tios</Text>
-            </TouchableOpacity>
+        {/* COLUNA ESQUERDA: LISTA DINÂMICA DE CASAS */}
+        <View style={styles.colunaCasas}>
+          <Text style={styles.tituloSecao}>Lista de casas</Text>
+          <ScrollView showsVerticalScrollIndicator={false}>
             
+            {casas.map((casa) => (
+              // 👉 A MÁGICA AQUI: Salva a casa clicada antes de mudar de tela!
+              <TouchableOpacity 
+                key={casa.id} 
+                style={styles.itemCasa} 
+                onPress={() => { 
+                  setCasaAtual(casa); 
+                  setTelaAtual('ListaDePets'); 
+                }}
+              >
+                <Image source={{ uri: casa.imagem }} style={styles.imagemCasa} />
+                <Text style={styles.textoCasa}>{casa.nome}</Text>
+              </TouchableOpacity>
+            ))}
+
+          </ScrollView>
+        </View>
+
+        {/* COLUNA DIREITA: BOTÕES DE AÇÃO */}
+        <View style={styles.colunaBotoes}>
+          <View style={styles.itemBotao}>
+            <Text style={styles.textoRotulo}>Nova casa</Text>
+            <TouchableOpacity style={styles.botaoAcao} onPress={() => setTelaAtual('NovaCasa')}>
+              <Feather name="plus" size={50} color="#CC5A00" />
+            </TouchableOpacity>
           </View>
 
-          {/* COLUNA DIREITA (Botões de Ação) */}
-          <View style={styles.colunaDireita}>
-            
-            <View style={styles.itemAcao}>
-              <Text style={styles.textoAcao}>Nova casa</Text>
-              <TouchableOpacity 
-                style={styles.botaoCirculo}
-                onPress={() => setTelaAtual('NovaCasa')}
-              >
-                <Ionicons name="add" size={50} color="#333" />
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.itemAcao}>
-              <Text style={styles.textoAcao}>Excluir</Text>
-              <TouchableOpacity 
-                style={styles.botaoCirculo}
-                onPress={() => setTelaAtual('ExcluirCasa')}
-              >
-                <Feather name="trash-2" size={40} color="#333" />
-              </TouchableOpacity>
-            </View>
-
+          <View style={styles.itemBotao}>
+            <Text style={styles.textoRotulo}>Excluir</Text>
+            <TouchableOpacity style={styles.botaoAcao} onPress={() => setTelaAtual('ExcluirCasa')}>
+              <Feather name="trash-2" size={40} color="#CC5A00" />
+            </TouchableOpacity>
           </View>
-
         </View>
 
       </View>
@@ -93,17 +63,20 @@ export default function ListaDeCasas({ setTelaAtual }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, },
-  conteudo: { flex: 1, paddingTop: 80, paddingHorizontal: 20, },
-  versao: { position: 'absolute', bottom: 20, left: 20, color: '#333', fontSize: 14, fontWeight: 'bold', },
-  patinha: { position: 'absolute', zIndex: 0, },
-  colunasContainer: { flexDirection: 'row', flex: 1, zIndex: 1, },
-  colunaEsquerda: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 25, },
-  itemCasa: { alignItems: 'center', },
-  imagemCasa: { width: 100, height: 100, borderRadius: 100, borderWidth: 2, borderColor: '#333', },
-  textoCasa: { color: '#333', fontSize: 16, fontWeight: 'bold', marginTop: 10, },
-  colunaDireita: { flex: 1, alignItems: 'center', paddingTop: 160, },
-  itemAcao: { alignItems: 'center', marginBottom: 40, },
-  textoAcao: { color: '#333', fontSize: 22, fontWeight: 'bold', marginBottom: 10, },
-  botaoCirculo: { width: 100, height: 100, borderRadius: 100, borderWidth: 5, borderColor: '#333', justifyContent: 'center', alignItems: 'center', backgroundColor: '#F86F03', }
+  container: { flex: 1, paddingTop: 60, paddingHorizontal: 20 },
+  patinha: { position: 'absolute', zIndex: 0 },
+  versao: { position: 'absolute', bottom: 20, left: 20, color: '#333', fontSize: 14, fontWeight: 'bold' },
+  
+  layoutPrincipal: { flexDirection: 'row', flex: 1, zIndex: 1 },
+  
+  colunaCasas: { flex: 1, alignItems: 'center' },
+  tituloSecao: { fontSize: 24, fontWeight: '900', color: '#333', marginBottom: 20 },
+  itemCasa: { alignItems: 'center', marginBottom: 30 },
+  imagemCasa: { width: 100, height: 100, borderRadius: 50, borderWidth: 3, borderColor: '#fff' },
+  textoCasa: { fontSize: 16, fontWeight: 'bold', color: '#fff', marginTop: 10, textAlign: 'center' },
+
+  colunaBotoes: { width: 120, alignItems: 'center', paddingTop: 50, gap: 40 },
+  itemBotao: { alignItems: 'center', gap: 10 },
+  textoRotulo: { fontSize: 18, fontWeight: 'bold', color: '#333' },
+  botaoAcao: { width: 90, height: 90, borderRadius: 50, backgroundColor: '#111', borderWidth: 4, borderColor: '#333', justifyContent: 'center', alignItems: 'center' }
 });
