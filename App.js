@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'; 
 import { StatusBar } from 'expo-status-bar';
 
-import TelaPesquisaPet from './TelaPesquisaPet';
 import TelaDeLogin from './TelaDeLogin'; 
 import TelaDeCadastro from './TelaDeCadastro'; 
 import ListaDeCasas from './ListaDeCasas';
@@ -62,7 +61,6 @@ export default function App() {
   
   // 👉 Passamos as notificações para a tela do Usuário!
   if (telaAtual === 'PerfilUsuario') return <TelaPerfilUsuario setTelaAtual={setTelaAtual} usuarioAtual={usuarioAtual} pets={pets} notificacoesAtivas={notificacoesAtivas} setNotificacoesAtivas={setNotificacoesAtivas} />; 
-  if (telaAtual === 'PesquisaPet') return <TelaPesquisaPet setTelaAtual={setTelaAtual} />;
   return ( 
     <LinearGradient colors={['#F86F03', '#4F7FFF']} style={styles.container}> 
       <StatusBar style="auto" /> 
