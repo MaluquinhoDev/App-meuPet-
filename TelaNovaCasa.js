@@ -6,7 +6,7 @@ import { FontAwesome5, Ionicons, Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
 // 👉 Recebe o usuarioAtual aqui!
-export default function TelaNovaCasa({ setTelaAtual, casas, setCasas, usuarioAtual }) {
+export default function TelaNovaCasa({ setTelaAtual, usuarioAtual, onCriarCasa }) {
   const [nomeDaCasa, setNomeDaCasa] = useState('');
   const [imagemSelecionada, setImagemSelecionada] = useState(null);
 
@@ -38,15 +38,8 @@ export default function TelaNovaCasa({ setTelaAtual, casas, setCasas, usuarioAtu
 
     const imagemFinal = imagemSelecionada ? imagemSelecionada : 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=250&auto=format&fit=crop';
 
-    const novaCasa = {
-      id: Math.random().toString(),
-      nome: nomeDaCasa,
-      imagem: imagemFinal,
-      // 👉 MÁGICA DE PERMISSÃO: Quem cria vira o Admin!
-      adminId: usuarioAtual.id
-    };
-
-    setCasas([...casas, novaCasa]);
+    const novaCasa = { nome: nomeDaCasa, imagem: imagemFinal, adminId: usuarioAtual.id };
+    onCriarCasa(novaCasa);
     setNomeDaCasa('');
     setTelaAtual('Casas');
   };

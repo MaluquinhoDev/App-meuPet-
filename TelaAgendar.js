@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 
-export default function TelaAgendar({ setTelaAtual, petAtual, agendamentos, setAgendamentos }) {
+export default function TelaAgendar({ setTelaAtual, petAtual, onAgendar }) {
   const [compromisso, setCompromisso] = useState('');
   const [data, setData] = useState('');
   const [horario, setHorario] = useState('');
@@ -17,16 +17,8 @@ export default function TelaAgendar({ setTelaAtual, petAtual, agendamentos, setA
     }
 
     // Salva na nossa memória geral do App.js
-    const novoAgendamento = {
-      id: Math.random().toString(),
-      petId: petAtual.id,
-      compromisso,
-      data,
-      horario,
-      observacao
-    };
-
-    setAgendamentos([...agendamentos, novoAgendamento]);
+    const novoAgendamento = { petId: petAtual.id, compromisso, data, horario, observacao };
+    onAgendar(novoAgendamento);
 
     // 👉 SIMULA A NOTIFICAÇÃO!
     const mensagemNotificacao = `Agendado com sucesso!\nNós enviaremos uma notificação no dia ${data} às ${horario} para o compromisso: ${compromisso} do ${petAtual.nome}.`;

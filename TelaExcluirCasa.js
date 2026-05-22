@@ -5,19 +5,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { FontAwesome5, Ionicons, Feather } from '@expo/vector-icons';
 
-export default function TelaExcluirCasa({ setTelaAtual, casas, setCasas, pets, setPets, casaAtual, setCasaAtual, usuarioAtual }) {
+export default function TelaExcluirCasa({ setTelaAtual, casas, casaAtual, setCasaAtual, usuarioAtual, onExcluirCasa }) {
 
-  const handleExcluir = (idCasaParaExcluir) => {
-    const novasCasas = casas.filter((casa) => casa.id !== idCasaParaExcluir);
-    setCasas(novasCasas);
 
-    const novosPets = pets.filter((pet) => pet.casaId !== idCasaParaExcluir);
-    setPets(novosPets);
-
-    if (casaAtual?.id === idCasaParaExcluir) {
-      setCasaAtual(null);
-    }
-  };
 
   // 👉 2. CORREÇÃO: O alerta agora funciona no Navegador (Web) e no Celular!
   const confirmarExclusao = (idCasa, nomeCasa) => {
@@ -25,7 +15,7 @@ export default function TelaExcluirCasa({ setTelaAtual, casas, setCasas, pets, s
       // Usa o alerta padrão do navegador do PC
       const confirmou = window.confirm(`Tem certeza que deseja excluir a "${nomeCasa}"? Todos os pets dessa casa também serão apagados!`);
       if (confirmou) {
-        handleExcluir(idCasa);
+        onExcluirCasa(idCasa);
       }
     } else {
       // Usa o alerta bonito e nativo do aplicativo (Expo Go no celular)
@@ -34,7 +24,7 @@ export default function TelaExcluirCasa({ setTelaAtual, casas, setCasas, pets, s
         `Tem certeza que deseja excluir a "${nomeCasa}"? Todos os pets dessa casa também serão apagados!`, 
         [
           { text: "Cancelar", style: "cancel" },
-          { text: "Sim, excluir", onPress: () => handleExcluir(idCasa), style: "destructive" }
+          { text: "Sim, excluir", onPress: () => onExcluirCasa(idCasa), style: "destructive" }
         ]
       );
     }
