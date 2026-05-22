@@ -6,7 +6,7 @@ import { FontAwesome5, Ionicons, Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker'; 
 
 // 👉 IMPORTANTE: Recebemos a 'casaAtual' aqui
-export default function TelaNovoPet({ setTelaAtual, pets, setPets, casaAtual }) {
+export default function TelaNovoPet({ setTelaAtual, casaAtual, onCriarPet }) {
   const [nome, setNome] = useState('');
   const [tipo, setTipo] = useState('');
   const [raca, setRaca] = useState('');
@@ -41,16 +41,8 @@ export default function TelaNovoPet({ setTelaAtual, pets, setPets, casaAtual }) 
 
     const imagemFinal = imagemSelecionada ? imagemSelecionada : 'https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&w=250&auto=format&fit=crop';
 
-    const novoPet = {
-      id: Math.random().toString(),
-      nome: nome,
-      imagem: imagemFinal,
-      // 👉 A MÁGICA AQUI: Carimba o pet dizendo de qual casa ele é!
-      casaId: casaAtual.id 
-    };
-
-    // 👉 Salva na memória e volta para a tela de lista
-    setPets([...pets, novoPet]); 
+    const novoPet = { nome, imagem: imagemFinal, casaId: casaAtual.id, tipo, raca, nascimento };
+    onCriarPet(novoPet);
     setTelaAtual('ListaDePets'); 
   };
 

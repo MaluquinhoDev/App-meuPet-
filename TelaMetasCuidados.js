@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { FontAwesome5, Ionicons, Feather } from '@expo/vector-icons';
 
-export default function TelaMetasCuidados({ setTelaAtual, petAtual, casaAtual, usuarioAtual, metas, setMetas, agendamentos }) {
+export default function TelaMetasCuidados({ setTelaAtual, petAtual, casaAtual, usuarioAtual, metas, setMetas, agendamentos, onSalvarMeta }) {
   
   const isAdmin = casaAtual?.adminId === usuarioAtual?.id;
   const [configurando, setConfigurando] = useState(false);
@@ -32,7 +32,9 @@ export default function TelaMetasCuidados({ setTelaAtual, petAtual, casaAtual, u
     if (!configurando && novoValor > novasMetas[index][`${tipo}Meta`]) { novoValor = novasMetas[index][`${tipo}Meta`]; }
 
     novasMetas[index][campo] = novoValor;
-    setMetas(novasMetas); 
+    setMetas(novasMetas);
+    onSalvarMeta(novasMetas[index]);
+    onSalvarMeta(novasMetas[index]); 
   };
 
   const alterarPeriodo = (tipo) => {
@@ -47,6 +49,7 @@ export default function TelaMetasCuidados({ setTelaAtual, petAtual, casaAtual, u
     
     novasMetas[index][`${tipo}Periodo`] = periodos[proximoIndex];
     setMetas(novasMetas);
+    onSalvarMeta(novasMetas[index]);
   };
 
   return (

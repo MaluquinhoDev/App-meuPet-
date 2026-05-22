@@ -1,9 +1,8 @@
-import React, { useState } from 'react'; 
+import React, { useEffect, useState } from 'react'; 
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'; 
 import { LinearGradient } from 'expo-linear-gradient'; 
 import { StatusBar } from 'expo-status-bar';
 
-import TelaPesquisaPet from './TelaPesquisaPet';
 import TelaDeLogin from './TelaDeLogin'; 
 import TelaDeCadastro from './TelaDeCadastro'; 
 import ListaDeCasas from './ListaDeCasas';
@@ -15,6 +14,7 @@ import TelaPerfilPet from './TelaPerfilPet';
 import TelaAgendar from './TelaAgendar'; 
 import TelaMetasCuidados from './TelaMetasCuidados'; 
 import TelaPerfilUsuario from './TelaPerfilUsuario'; 
+import { initDatabase, getCasas, getPets, getAgendamentos, getMetas, addCasa, deleteCasa, addPet, addAgendamento, upsertMeta } from './db';
 
 export default function App() { 
   const [message, setMessage] = useState('Bem-vindo ao MeuPets!'); 
@@ -25,44 +25,45 @@ export default function App() {
   // 👉 NOVA MEMÓRIA: Guarda a preferência de notificações
   const [notificacoesAtivas, setNotificacoesAtivas] = useState(true);
 
-  const [casas, setCasas] = useState([
-    { id: '1', nome: 'Minha casa', imagem: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=250&auto=format&fit=crop', adminId: 'user123' },
-    { id: '2', nome: 'Casa do Vizinho', imagem: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=250&auto=format&fit=crop', adminId: 'outro_usuario_qualquer' }
-  ]);
+  const [casas, setCasas] = useState([]);
   const [casaAtual, setCasaAtual] = useState(null);
-
-  const [pets, setPets] = useState([
-    { id: '1', nome: 'Bolinha', imagem: 'https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&w=250&auto=format&fit=crop', casaId: '1' }
-  ]);
-  
+  const [pets, setPets] = useState([]);
   const [petAtual, setPetAtual] = useState(null);
-
-  const [metas, setMetas] = useState([
-    { 
-      petId: '1', comidaMeta: 3, comidaFeita: 0, comidaPeriodo: 'Diário', 
-      passeioMeta: 2, passeioFeita: 0, passeioPeriodo: 'Diário', 
-      curativoMeta: 0, curativoFeita: 0, curativoPeriodo: 'Mensal',
-      vetMeta: 1, vetFeita: 0, vetPeriodo: 'Semestral'
-    }
-  ]);
-
+  const [metas, setMetas] = useState([]);
   const [agendamentos, setAgendamentos] = useState([]);
+
+  const refreshData = () => {
+    setCasas(getCasas());
+    setPets(getPets());
+    setAgendamentos(getAgendamentos());
+    setMetas(getMetas());
+  };
+
+  useEffect(() => {
+    initDatabase(usuarioAtual);
+    refreshData();
+  }, []);
+
+  const handleCriarCasa = (novaCasa) => { addCasa(novaCasa); refreshData(); };
+  const handleExcluirCasa = (idCasa) => { deleteCasa(idCasa); refreshData(); if (casaAtual?.id === idCasa) setCasaAtual(null); };
+  const handleCriarPet = (novoPet) => { addPet(novoPet); refreshData(); };
+  const handleAgendar = (novoAgendamento) => { addAgendamento(novoAgendamento); refreshData(); };
+  const handleSalvarMeta = (meta) => { upsertMeta(meta); refreshData(); };
 
   if (telaAtual === 'Login') return <TelaDeLogin setTelaAtual={setTelaAtual} />;
   if (telaAtual === 'Cadastro') return <TelaDeCadastro setTelaAtual={setTelaAtual} />; 
   if (telaAtual === 'Casas') return <ListaDeCasas setTelaAtual={setTelaAtual} casas={casas} setCasaAtual={setCasaAtual} />;
-  if (telaAtual === 'NovaCasa') return <TelaNovaCasa setTelaAtual={setTelaAtual} casas={casas} setCasas={setCasas} usuarioAtual={usuarioAtual} />; 
-  if (telaAtual === 'ExcluirCasa') return <TelaExcluirCasa setTelaAtual={setTelaAtual} casas={casas} setCasas={setCasas} pets={pets} setPets={setPets} casaAtual={casaAtual} setCasaAtual={setCasaAtual} usuarioAtual={usuarioAtual} />; 
+  if (telaAtual === 'NovaCasa') return <TelaNovaCasa setTelaAtual={setTelaAtual} usuarioAtual={usuarioAtual} onCriarCasa={handleCriarCasa} />; 
+  if (telaAtual === 'ExcluirCasa') return <TelaExcluirCasa setTelaAtual={setTelaAtual} casas={casas} casaAtual={casaAtual} setCasaAtual={setCasaAtual} usuarioAtual={usuarioAtual} onExcluirCasa={handleExcluirCasa} />; 
 
   if (telaAtual === 'ListaDePets') return <ListaDePets setTelaAtual={setTelaAtual} pets={pets} casaAtual={casaAtual} setPetAtual={setPetAtual} />; 
-  if (telaAtual === 'NovoPet') return <TelaNovoPet setTelaAtual={setTelaAtual} pets={pets} setPets={setPets} casaAtual={casaAtual} />; 
+  if (telaAtual === 'NovoPet') return <TelaNovoPet setTelaAtual={setTelaAtual} casaAtual={casaAtual} onCriarPet={handleCriarPet} />; 
 
-  if (telaAtual === 'Agendar') return <TelaAgendar setTelaAtual={setTelaAtual} petAtual={petAtual} agendamentos={agendamentos} setAgendamentos={setAgendamentos} />; 
-  if (telaAtual === 'MetasCuidados') return <TelaMetasCuidados setTelaAtual={setTelaAtual} petAtual={petAtual} casaAtual={casaAtual} usuarioAtual={usuarioAtual} metas={metas} setMetas={setMetas} agendamentos={agendamentos} />; 
+  if (telaAtual === 'Agendar') return <TelaAgendar setTelaAtual={setTelaAtual} petAtual={petAtual} onAgendar={handleAgendar} />; 
+  if (telaAtual === 'MetasCuidados') return <TelaMetasCuidados setTelaAtual={setTelaAtual} petAtual={petAtual} casaAtual={casaAtual} usuarioAtual={usuarioAtual} metas={metas} setMetas={setMetas} agendamentos={agendamentos} onSalvarMeta={handleSalvarMeta} />; 
   
   // 👉 Passamos as notificações para a tela do Usuário!
   if (telaAtual === 'PerfilUsuario') return <TelaPerfilUsuario setTelaAtual={setTelaAtual} usuarioAtual={usuarioAtual} pets={pets} notificacoesAtivas={notificacoesAtivas} setNotificacoesAtivas={setNotificacoesAtivas} />; 
-  if (telaAtual === 'PesquisaPet') return <TelaPesquisaPet setTelaAtual={setTelaAtual} />;
   return ( 
     <LinearGradient colors={['#F86F03', '#4F7FFF']} style={styles.container}> 
       <StatusBar style="auto" /> 
