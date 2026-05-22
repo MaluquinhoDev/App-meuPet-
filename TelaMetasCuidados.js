@@ -34,7 +34,6 @@ export default function TelaMetasCuidados({ setTelaAtual, petAtual, casaAtual, u
     novasMetas[index][campo] = novoValor;
     setMetas(novasMetas);
     onSalvarMeta(novasMetas[index]);
-    onSalvarMeta(novasMetas[index]); 
   };
 
   const alterarPeriodo = (tipo) => {
